@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const Firework = ({ x, y, color }) => {
   return (
-    <div className="absolute animate-firework">
+    <div className="absolute animate-firework" style={{ left: `${x}%`, top: `${y}%` }}>
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
