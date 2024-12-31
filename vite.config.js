@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: "/vit-deploy/"
+  base: "/Merry-Christmas-And-Happy-new-year/"
 });
   
