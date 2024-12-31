@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import snowfall from '../assets/snowfall.mp3';
 
 const SOUND_TRACKS = {
-  jingleBells: '/jingle-bells.mp3',
-  silentNight: '/silent-night.mp3',
-  weWishYou: '/we-wish-you.mp3',
-  snowfall: snowfall
+  snowfall: snowfall,
 };
 
 const Sound = ({ currentTrack, isPlaying }) => {
@@ -39,6 +36,12 @@ const Sound = ({ currentTrack, isPlaying }) => {
       }
     }
   }, [isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  }, []);
 
   return null;
 };

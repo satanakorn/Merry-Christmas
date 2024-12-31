@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Bell, Gift, Heart, TreeDeciduous as TreesIcon, Calendar, Volume2, VolumeX } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useSwipeable } from 'react-swipeable';
 import Card from './components/Card';
 import CountdownTimer from './components/CountdownTimer';
 import BackgroundSnow from './components/BackgroundSnow';
 import Settings from './components/Settings';
 import Sound from './components/Sound';
-
 
 const SOUND_EFFECTS = {
   flip: '/card-flip.mp3',
@@ -61,9 +61,10 @@ const ChristmasApp = () => {
   const [messageIndex, setMessageIndex] = useState(0);
   const [selectedCard, setSelectedCard] = useState(null);
   const [theme, setTheme] = useState('dark');
-  const [currentTrack, setCurrentTrack] = useState('jingleBells');
+  const [currentTrack, setCurrentTrack] = useState('snowfall');
   const [bgTheme, setBgTheme] = useState('christmas');
   const [isPlaying, setIsPlaying] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const playSound = (soundType) => {
     if (isPlaying) {
@@ -74,7 +75,7 @@ const ChristmasApp = () => {
 
   useEffect(() => {
     if (step === 'inspiration' && messageIndex < inspirationalMessages.length - 1) {
-      const timer = setTimeout(() => setMessageIndex((prev) => prev + 1), 2000);
+      const timer = setTimeout(() => setMessageIndex((prev) => prev + 1), 4000); // 4 seconds
       return () => clearTimeout(timer);
     }
   }, [messageIndex, step]);
@@ -111,6 +112,21 @@ const ChristmasApp = () => {
     setSelectedCard(null);
   };
 
+  const nextCard = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  };
+
+  const prevCard = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + cards.length) % cards.length);
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: nextCard,
+    onSwipedRight: prevCard,
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true
+  });
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-br ${THEMES[bgTheme][theme]} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden`}
@@ -133,8 +149,8 @@ const ChristmasApp = () => {
         onClick={() => setIsPlaying(!isPlaying)}
       >
         {isPlaying ? 
-          <VolumeX className="w-5 h-5 md:w-6 md:h-6 text-white" /> : 
-          <Volume2 className="w-5 h-5 md:w-6 md:h-6 text-white" />
+          <Volume2 className="w-5 h-5 md:w-6 md:h-6 text-white" /> : 
+          <VolumeX className="w-5 h-5 md:w-6 md:h-6 text-white" />
         }
       </button>
 
@@ -154,7 +170,7 @@ const ChristmasApp = () => {
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              Merry Christmas 🎄
+              happy new year 2025
             </motion.h1>
             <motion.div
               animate={{
@@ -211,21 +227,32 @@ const ChristmasApp = () => {
 
         {step === 'cards' && (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full max-w-6xl px-4 md:px-8"
+            className="relative w-full max-w-6xl px-4 md:px-8"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
+            {...handlers}
           >
-            {cards.map((card) => (
-              <Card
-                key={card.id}
-                icon={card.icon}
-                color={card.color}
-                message={selectedCard === card.id ? messages[card.id - 1] : card.message}
-                onClick={() => handleCardClick(card.id)}
-                isFlipped={selectedCard === card.id}
-                theme={theme}
-              />
-            ))}
+            <div className="w-full overflow-hidden">
+              <motion.div
+                className="flex"
+                initial={{ x: 0 }}
+                animate={{ x: -currentIndex * 100 + '%' }}
+                transition={{ duration: 0.5 }}
+              >
+                {cards.map((card) => (
+                  <div className="w-full flex-shrink-0" key={card.id}>
+                    <Card
+                      icon={card.icon}
+                      color={card.color}
+                      message={selectedCard === card.id ? messages[card.id - 1] : card.message}
+                      onClick={() => handleCardClick(card.id)}
+                      isFlipped={selectedCard === card.id}
+                      theme={theme}
+                    />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -267,6 +294,5 @@ const ChristmasApp = () => {
     </div>
   );
 };
-
 
 export default ChristmasApp;
