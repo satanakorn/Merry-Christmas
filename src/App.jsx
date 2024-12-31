@@ -130,6 +130,7 @@ const ChristmasApp = () => {
   return (
     <div
       className={`min-h-screen bg-gradient-to-br ${THEMES[bgTheme][theme]} flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden`}
+      {...handlers}
     >
       <BackgroundSnow theme={theme} />
       <Settings

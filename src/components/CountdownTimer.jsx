@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 const Firework = ({ x, y, color }) => {
   return (
     <div className="absolute animate-firework" style={{ left: `${x}%`, top: `${y}%` }}>
-      {[...Array(12)].map((_, i) => (
+      {[...Array(20)].map((_, i) => (
         <div
           key={i}
           className="absolute w-1 h-1 rounded-full animate-particle"
           style={{
             backgroundColor: color,
-            transform: `rotate(${i * 30}deg) translate(0, -20px)`
+            transform: `rotate(${i * 18}deg) translate(0, -20px)`
           }}
         />
       ))}
@@ -110,7 +110,7 @@ const CountdownTimer = () => {
         }
 
         .animate-particle {
-          animation: particle 0.6s ease-out forwards;
+          animation: particle 0.8s ease-out forwards;
         }
       `}</style>
     </div>
